@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>出错了 - Blog</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.5.0/dist/semantic.min.css">
+</head>
+<body>
+    <div class="ui middle aligned center aligned grid" style="height: 100vh;">
+        <div class="column" style="max-width: 450px;">
+            <div class="ui negative message">
+                <div class="header">操作失败</div>
+                <p th:text="${error}">发生未知错误</p>
+            </div>
+            <a href="/" class="ui button">返回首页</a>
+        </div>
+    </div>
+</body>
+</html>

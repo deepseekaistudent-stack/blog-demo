@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录 - 我的应用</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(145deg, #f6f9fc 0%, #e6f0f5 100%); padding: 20px; }
+        .login-container { width: 100%; max-width: 420px; }
+        .login-card { background: #ffffff; border-radius: 24px; padding: 40px 36px 32px; box-shadow: 0 20px 60px rgba(0, 20, 30, 0.12), 0 8px 24px rgba(0, 0, 0, 0.04); transition: transform 0.25s ease, box-shadow 0.3s ease; }
+        .login-card:hover { transform: translateY(-2px); box-shadow: 0 28px 72px rgba(0, 20, 30, 0.16); }
+        .login-title { font-size: 28px; font-weight: 700; color: #0a1e2e; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .login-subtitle { color: #5c7a8e; font-size: 15px; margin-bottom: 28px; font-weight: 400; border-bottom: 1px solid #eef3f7; padding-bottom: 20px; }
+        .form-group { margin-bottom: 20px; position: relative; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; color: #1d3b4f; margin-bottom: 6px; }
+        .input-icon-wrapper { position: relative; }
+        .input-icon-wrapper .icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #8aa4b8; font-size: 16px; pointer-events: none; transition: color 0.2s; }
+        .input-icon-wrapper input { width: 100%; padding: 12px 16px 12px 44px; font-size: 15px; border: 1.5px solid #dde7ed; border-radius: 12px; background: #f9fcfe; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; color: #0a1e2e; font-family: inherit; }
+        .input-icon-wrapper input:focus { outline: none; border-color: #2b7dff; background: #ffffff; box-shadow: 0 0 0 4px rgba(43, 125, 255, 0.12); }
+        .input-icon-wrapper input::placeholder { color: #a5bfd0; font-weight: 400; }
+        .captcha-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .captcha-group .input-icon-wrapper { flex: 1 1 60%; min-width: 100px; }
+        .captcha-img-wrapper { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+        .captcha-img { height: 44px; border-radius: 10px; border: 1.5px solid #dde7ed; cursor: pointer; transition: opacity 0.2s; background: #f2f6fa; }
+        .captcha-img:hover { opacity: 0.8; }
+        .refresh-link { color: #2b7dff; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: color 0.2s; white-space: nowrap; }
+        .refresh-link i { font-size: 14px; }
+        .refresh-link:hover { color: #0f5ecb; text-decoration: underline; }
+        .login-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #2b7dff 0%, #1a5fc7 100%); border: none; border-radius: 12px; color: white; font-size: 17px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; box-shadow: 0 6px 18px rgba(43, 125, 255, 0.30); letter-spacing: 0.3px; margin-top: 8px; font-family: inherit; }
+        .login-btn:hover { background: linear-gradient(135deg, #1f6eff 0%, #0f4fb7 100%); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(43, 125, 255, 0.40); }
+        .login-btn:active { transform: scale(0.98); }
+        .error-message { background: #fff0f0; border-left: 4px solid #e74c3c; padding: 10px 14px; border-radius: 8px; color: #c0392b; font-size: 14px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+        .error-message i { font-size: 18px; }
+        .success-message { background: #f0faf3; border-left: 4px solid #2ecc71; padding: 10px 14px; border-radius: 8px; color: #1e7a3e; font-size: 14px; margin-bottom: 18px; }
+        .success-message i { font-size: 18px; margin-right: 8px; }
+        .footer-links { margin-top: 20px; text-align: center; font-size: 14px; color: #7b98ad; }
+        .footer-links a { color: #2b7dff; text-decoration: none; font-weight: 500; }
+        .footer-links a:hover { text-decoration: underline; }
+        .back-link { display: block; margin-top: 16px; padding: 10px; text-align: center; color: #5c7a8e; text-decoration: none; font-size: 14px; font-weight: 500; border: 1.5px solid #dde7ed; border-radius: 12px; transition: all 0.2s; }
+        .back-link:hover { border-color: #2b7dff; color: #2b7dff; background: #f5f9ff; }
+        @media (max-width: 480px) { .login-card { padding: 28px 20px 24px; } .captcha-group { flex-direction: column; align-items: stretch; } .captcha-img-wrapper { justify-content: center; margin-top: 6px; } }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-title">欢迎回来</div>
+        <div class="login-subtitle">登录以访问您的个人中心</div>
+        <div th:if="${error}" class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${error}"></span>
+        </div>
+        <div th:if="${success}" class="success-message">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${success}"></span>
+        </div>
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <div class="input-icon-wrapper">
+                    <i class="fas fa-user icon"></i>
+                    <input type="text" id="username" name="username" placeholder="请输入用户名" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <div class="input-icon-wrapper">
+                    <i class="fas fa-lock icon"></i>
+                    <input type="password" id="password" name="password" placeholder="请输入密码" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label>验证码</label>
+                <div class="captcha-group">
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-shield-alt icon"></i>
+                        <input type="text" name="captcha" placeholder="输入验证码" required />
+                    </div>
+                    <div class="captcha-img-wrapper">
+                        <img id="captchaImg" class="captcha-img" src="" alt="验证码" title="点击刷新" onclick="refreshCaptcha()" />
+                        <span class="refresh-link" onclick="refreshCaptcha()">
+                            <i class="fas fa-sync-alt"></i> 换一张
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="uuid" name="uuid" th:value="${uuid}" />
+            <input type="hidden" name="_csrf" th:value="${_csrf}" />
+            <button type="submit" class="login-btn">登 录</button>
+            <div class="footer-links">
+                <span>还没有账号？</span>
+                <a href="/register">立即注册></a> <span style="margin:0 8px;">·</span>
+                <a href="/forgot-password">忘记密码？</a>
+            </div>
+        </form>
+        <a href="/" class="back-link">
+            <i class="fas fa-arrow-left"></i> 返回博客
+        </a>
+    </div>
+</div>
+<script>
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+    function refreshCaptcha() {
+        var uuid = document.getElementById('uuid').value;
+        if (!uuid) { uuid = generateUUID(); document.getElementById('uuid').value = uuid; }
+        var img = document.getElementById('captchaImg');
+        img.src = '/captcha?uuid=' + uuid + '&t=' + new Date().getTime();
+    }
+    window.onload = function() {
+        var uuidInput = document.getElementById('uuid');
+        if (!uuidInput.value) { uuidInput.value = generateUUID(); }
+        refreshCaptcha();
+    };
+</script>
+</body>
+</html>
