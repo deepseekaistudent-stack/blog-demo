@@ -16,7 +16,14 @@ public class CsrfFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        if ("POST".equalsIgnoreCase(request.getMethod())) {
+        String uri = request.getRequestURI();
+        
+        if (uri.startsWith("/api/")) {
+            chain.doFilter(request, response);
+            return;
+        }
+        
+        if ("POST".equalsIgnoreCase(request.getMethod()) || "PUT".equalsIgnoreCase(request.getMethod()) || "DELETE".equalsIgnoreCase(request.getMethod())) {
             String sessionToken = (String) request.getSession().getAttribute("csrf_token");
             if (sessionToken == null) {
                 sessionToken = UUID.randomUUID().toString();
